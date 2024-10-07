@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarefas</title>
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.date-cell').forEach(cell => {
+                const dateStr = cell.textContent;
+                const date = new Date(dateStr);
+                // Verifica se a data é válida
+                if (isNaN(date.getTime())) {
+                    cell.textContent = 'Data inválida';
+                } else {
+                    const formattedDate = date.toLocaleDateString('pt-BR');
+                    cell.textContent = formattedDate;
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.complete-form').forEach(form => {
+                form.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    
+                    const button = event.target.querySelector('.complete-button');
+                    const row = event.target.closest('tr');
+                    const formData = new FormData(event.target);
+                    
+                    fetch(event.target.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams(formData).toString()
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            button.style.backgroundColor = 'green';
+                            button.textContent = 'Concluída'; 
+                            row.classList.remove('pending');
+                            row.classList.add('completed');
+                        } else {
+                            console.error('Falha ao concluir a tarefa.');
+                        }
+                    })
+                    .catch(error => console.error('Erro:', error));
+                });
+            });
+        });
+    </script>
+
+</head>
+
+<body>
+    <h1 style="text-align: center;">Lista de tarefas</h1>
+    <table>
+    <thead>
+            <tr>
+                <th>Tarefas</th>
+                <th>Situação</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% tarefas.forEach(tarefa=> { %>
+                <tr>
+                    <td>
+                        <%= tarefa.tarefas %>
+                    </td>
+                    <td>
+                        <%= tarefa.concluida ? 'Concluída' : 'Pendente' %>
+                    </td>
+                    <td>
+                        <%= tarefa.data %>
+                    </td>
+
+                    <td>
+                        <!-- Formulário para Editar -->
+                        <form action="/tarefas/edit/<%= tarefa._id %>" method="GET" style="display:inline;">
+                            <button type="submit" class="edit-button">Editar</button>
+                        </form>
+                        <!-- Formulário para Concluir -->
+                        <form action="/tarefas/complete/<%= tarefa._id %>" method="POST" style="display:inline;" class="complete-form" >
+                            <button type="submit" class="complete-button">Concluir</button>
+                        </form>
+                        <!-- Formulário para Deletar -->
+                        <form action="/tarefas/delete/<%= tarefa._id %>" method="POST" style="display:inline;">
+                            <button type="submit" class="delete-button">Deletar</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+
+    <form action="/tarefas/add" method="GET" style="text-align: center; margin-top: 20px;" >
+        <button type="submit" class="add_button">Adicionar Nova Tarefa</button>
+    </form>
+</body>
+</html>

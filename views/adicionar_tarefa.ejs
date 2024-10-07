@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Tarefa</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body class="body_adicionar" style="text-align: center;">
+    <h1 style="text-align: center;">Adicionar Nova Tarefa</h1>
+        <form class="add" action="/tarefas/add" method="POST" style="display: inline;">
+            <label for="tarefas">Tarefa:</label>
+            <input type="text" id="tarefas" name="tarefas" required style="background-color: #003333;">
+
+            <label for="data">Data:</label>
+            <input type="date" id="data" name="data" required style="background-color: #003333;"><br>
+    <button type="submit" class="add_button">Adicionar</button>
+    </form>
+    <form action="/tarefas" method="GET" style="display: inline;">
+        <button type="submit" class="back-button">Voltar para a lista de tarefas</button>
+    </form>
+</body>
+
+</html>
